@@ -1,0 +1,53 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - dev
+      - test
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-build-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build
+        run: npm run build
+
+      - name: Deploy to Environment
+        if: ${{ github.ref == 'refs/heads/dev' }}
+        run: echo "Deploying to dev..."
+        env:
+          ENV_NAME: dev
+          SECRET_KEY: ${{ secrets.DEV_SECRET }}
+
+      - name: Deploy to test
+        if: ${{ github.ref == 'refs/heads/test' }}
+        run: echo "Deploying to test..."
+        env:
+          ENV_NAME: test
+          SECRET_KEY: ${{ secrets.TEST_SECRET }}
+
+      - name: Deploy to prod
+        if: ${{ github.event_name == 'pull_request' && github.base_ref == 'main' }}
+        run: echo "Deploying to prod..."
+        env:
+          ENV_NAME: prod
+          SECRET_KEY: ${{ secrets.PROD_SECRET }}
