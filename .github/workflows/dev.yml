@@ -24,4 +24,4 @@ jobs:
         run: npm run build
 
       - name: Deploy to Dev
-        run: ./deploy-dev.sh
+        run: dev
