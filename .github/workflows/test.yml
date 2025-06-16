@@ -30,3 +30,16 @@
 #     - run: npm ci
 #     - run: npm run build --if-present
 #     - run: npm test
+
+
+name: DEMO Test
+run-name: test by ${{ github.actor }}
+
+
+on: [push]
+
+jobs:
+  demo-job:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "✅ Demo Workflow Triggered!"
