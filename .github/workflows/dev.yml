@@ -4,7 +4,7 @@ run-name: Dev by ${{ github.actor }}
 on:
   push:
     branches:
-      - dev
+       dev
 
 jobs:
   Explore-Dev:
