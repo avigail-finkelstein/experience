@@ -32,14 +32,31 @@
 #     - run: npm test
 
 
-name: DEMO Test
-run-name: test by ${{ github.actor }}
-
-
-on: [push]
+name: Production Deployment
+on:
+  push:
+    branches:
+      - main
 
 jobs:
-  demo-job:
+  prod-deploy:
     runs-on: ubuntu-latest
+    environment: prod
     steps:
-      - run: echo "✅ Demo Workflow Triggered!"
+          - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
+      # - name: Checkout code
+      #   uses: actions/checkout@v4
+
+      # - name: Load environment variables
+      #   run: |
+      #     echo "${{ secrets.PROD_ENV_FILE }}" > .env
+
+      # - name: Install dependencies
+      #   run: npm install
+
+      # - name: Run Tests
+      #   run: npm test
+
+      # - name: Deploy to Production
+      #   run: echo "🚀 Deploying to production server"
+
