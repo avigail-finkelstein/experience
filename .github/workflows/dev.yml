@@ -2,10 +2,11 @@ name: Dev Workflow
 run-name: Dev by ${{ github.actor }}
 
 on:
-  push:
-    branches:
-       [dev]
-Explore-GitHub-Actions:
+  [push]
+  # push:
+    # branches:
+      # - dev
+
 jobs:
   Explore-Dev:
     runs-on: ubuntu-latest
