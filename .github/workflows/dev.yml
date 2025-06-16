@@ -1,0 +1,19 @@
+name: Dev Workflow
+run-name: Dev by ${{ github.actor }}
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  Explore-Dev:
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "🛠️ DEV Workflow triggered by ${{ github.event_name }}."
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - run: echo "🧪 Running on branch: ${{ github.ref }}"
+      - run: echo "📂 Files in workspace:"
+      - run: ls ${{ github.workspace }}
+      - run: echo "✅ Dev workflow completed successfully!"
