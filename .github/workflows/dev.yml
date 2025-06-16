@@ -1,8 +1,7 @@
 name: Dev Workflow
 run-name: Dev by ${{ github.actor }}
 
-on:
-  [push]
+on: [push]
   # push:
     # branches:
       # - dev
