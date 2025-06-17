@@ -1,5 +1,5 @@
 name: Deploy to Dev
-run-name: Build & Deploy DEV by ${{ github.actor }}
+run-name: DEV by ${{ github.actor }}
 
 on:
   push:
@@ -28,11 +28,11 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Deploy to DEV Server
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.DEV_HOST }}       # כתובת שרת dev
-          username: ${{ secrets.DEV_USER }}   # שם משתמש
-          key: ${{ secrets.DEV_KEY }}         # מפתח SSH פרטי
-          source: "dist/"                     # תיקייה שמועתקת
-          target: "/var/www/dev-app"          # נתיב יעד בשרת
+      # - name: Deploy to DEV Server
+      #   uses: appleboy/scp-action@v0.1.4
+      #   with:
+      #     host: ${{ secrets.DEV_HOST }}       # כתובת שרת dev
+      #     username: ${{ secrets.DEV_USER }}   # שם משתמש
+      #     key: ${{ secrets.DEV_KEY }}         # מפתח SSH פרטי
+      #     source: "dist/"                     # תיקייה שמועתקת
+      #     target: "/var/www/dev-app"          # נתיב יעד בשרת

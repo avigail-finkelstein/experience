@@ -1,5 +1,5 @@
 name: Deploy to Test
-run-name: test Build & Deploy TEST by ${{ github.actor }}
+run-name: test by ${{ github.actor }}
 
 on:
   push:
