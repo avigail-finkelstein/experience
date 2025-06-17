@@ -1,62 +1,38 @@
-# # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+name: Deploy to Test
+run-name: test Build & Deploy TEST by ${{ github.actor }}
 
-# name: Node.js CI
-# run-name: ${{ github.actor }} is testing out GitHub Actions ✌️
-
-# on:
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
-
-# jobs:
-#   build:
-
-#     runs-on: ubuntu-latest
-
-#     strategy:
-#       matrix:
-#         node-version: [18.x, 20.x, 22.x]
-#         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-#     steps:
-#     - uses: actions/checkout@v4
-#     - name: Use Node.js ${{ matrix.node-version }}
-#       uses: actions/setup-node@v4
-#       with:
-#         node-version: ${{ matrix.node-version }}
-#         cache: 'npm'
-#     - run: npm ci
-#     - run: npm run build --if-present
-#     - run: npm test
-
-
-name: Production Deployment
 on:
   push:
-    branches:
-      - main
+    branches: [ "test" ]   # רץ כשיש push לענף test
 
 jobs:
-  prod-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    environment: prod
+
     steps:
-          - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      # - name: Checkout code
-      #   uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      # - name: Load environment variables
-      #   run: |
-      #     echo "${{ secrets.PROD_ENV_FILE }}" > .env
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
 
-      # - name: Install dependencies
-      #   run: npm install
+      - name: Install dependencies
+        run: npm ci
 
-      # - name: Run Tests
-      #   run: npm test
+      - name: Build project
+        run: npm run build --if-present
 
-      # - name: Deploy to Production
-      #   run: echo "🚀 Deploying to production server"
+      - name: Run tests
+        run: npm test
 
+      - name: Deploy to TEST Server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.TEST_HOST }}       # כתובת שרת test
+          username: ${{ secrets.TEST_USER }}   # שם משתמש
+          key: ${{ secrets.TEST_KEY }}         # מפתח SSH פרטי
+          source: "dist/"                      # מה מועתק
+          target: "/var/www/test-app"          # לאן מועתק

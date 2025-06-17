@@ -1,10 +1,9 @@
-name: Dev Workflow
-run-name: Dev by ${{ github.actor }}
+name: Deploy to Dev
+run-name: Build & Deploy DEV by ${{ github.actor }}
 
 on:
   push:
-    branches:
-      - dev
+    branches: [ "dev" ]   # רץ רק כשיש push לענף dev
 
 jobs:
   build-and-deploy:
@@ -14,14 +13,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
       - name: Install dependencies
         run: npm ci
 
-      - name: Run tests
-        run: npm run test
-
       - name: Build project
-        run: npm run build
+        run: npm run build --if-present
 
-      # - name: Deploy to Dev
-        # run: ./deploy-dev.sh
+      - name: Run tests
+        run: npm test
+
+      - name: Deploy to DEV Server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.DEV_HOST }}       # כתובת שרת dev
+          username: ${{ secrets.DEV_USER }}   # שם משתמש
+          key: ${{ secrets.DEV_KEY }}         # מפתח SSH פרטי
+          source: "dist/"                     # תיקייה שמועתקת
+          target: "/var/www/dev-app"          # נתיב יעד בשרת

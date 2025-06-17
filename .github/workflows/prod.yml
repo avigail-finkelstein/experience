@@ -1,0 +1,38 @@
+name: Deploy to Production
+run-name: prod Build & Deploy PROD by ${{ github.actor }}
+
+on:
+  push:
+    branches: [ "main" ]   # רץ כשיש push לענף הראשי main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build project
+        run: npm run build --if-present
+
+      - name: Run tests
+        run: npm test
+
+      - name: Deploy to PROD Server
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.PROD_HOST }}       # כתובת שרת prod
+          username: ${{ secrets.PROD_USER }}   # שם משתמש
+          key: ${{ secrets.PROD_KEY }}         # מפתח SSH פרטי
+          source: "dist/"                      # מה להעתיק
+          target: "/var/www/prod-app"          # לאן להעתיק
